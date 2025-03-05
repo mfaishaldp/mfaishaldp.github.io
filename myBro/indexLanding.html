@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY BRO - Landing Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <style>
+        table, th, td {
+            border: 1px solid black
+        }
+
+        #welcome{
+            font-family :'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+        }
+
+        .lead {
+            font-family :'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            font-size: medium;
+        }
+
+        .card-body {
+            padding: 70px;
+        }
+
+        #saldoPerTarget {
+            font-size: 40px;
+        }
+
+        .row {
+            padding: 30px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="My Bro!.png" style="height: 60px" />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="#">Logout</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Delete Account</a>
+              </li> -->
+            </ul>
+
+            <form class="form-inline">
+                <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </form>
+            <form class="form-inline" style="margin: 15px;">
+                <a class="nav-link" href="#" onclick="deleteAccount()">Delete Account</a>
+            </form>
+
+        
+          </div>
+        </div>
+    </nav>
+    
+
+    <!-- FeatureNew -->
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4" id="welcome"></h1>
+            <p class="lead">"Kaya bukanlah tentang seberapa banyak uang yang kita peroleh, melainkan tentang seberapa baik kita mengelola uang tersebut." – Noel Whittaker.</p>
+        </div>
+    </div>
+    
+
+    <div class="row">
+        <div class="col text-center" style="padding-left: 50px;">
+            <div class="card text-white bg-dark mb-3" style="width: 100%; height: 100%;">
+                <div class="card-body">
+                  <p style="font-size: 20px;">Saldo / Target</p>
+                  <p class="card-text" id = "saldoPerTarget"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col text-center">
+            <div class="row">
+                <input type="number" id = "target" style="margin-bottom: 10px">
+                <button class="btn btn-primary" id="buttonTarget" onclick="buttonTarget()"> Submit Target</button>
+            </div>
+            <div class="row">
+                <label for="">Keterangan</label>
+                <input type="text" id = "keterangan">
+                <label for="">Tabung</label>
+                <input type="number" id = "tabung" style="margin-bottom: 10px">
+                <button class = "btn btn-success" id="buttonTrasaction" onclick="buttonTrasaction()">Submit Tabungan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <table style="width: 100%"; class="table table-striped table-dark">
+            <thead style="text-align: center;"></thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+
+    <!--/ FeatureNew -->
+
+
+    <!-- Feature -->
+    <!-- <button onclick="logout()">Logout</button>
+    <button onclick="deleteAccount()">Delete Account</button>
+    <p id = "welcome"></p>
+
+    <h1>SUBMIT TARGET</h1>
+    <input type="number" id = "target">
+    <button id="buttonTarget" onclick="buttonTarget()"> Submit Target</button>
+
+    <h1>SUBMIT TRANSAKSI</h1>
+    <label for="">keterangan</label>
+    <input type="text" id = "keterangan">
+    <label for="">tabung</label>
+    <input type="number" id = "tabung">
+    <button id="buttonTrasaction" onclick="buttonTrasaction()">Submit Transaction</button>
+
+
+    <h1>TABLE</h1>
+    <table style="width: 100%";>
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+
+
+    <h1>SALDO/TARGET</h1>
+    <p id = "saldoPerTarget"></p> -->
+
+
+    <script>
+        let objCurrentLoggedIn = JSON.parse(sessionStorage.getItem("currentLoggedIn"))
+        let usernameLogin = objCurrentLoggedIn["username"]
+        document.getElementById("welcome").innerHTML = `Welcome, ${usernameLogin} !`
+
+        function getTotalSaldo () {
+            const arrUserTabungLocal = JSON.parse(localStorage.getItem("userTabungLocal"))
+            const arrUserTargetLocal = JSON.parse(localStorage.getItem("userTargetLocal"))
+            let totSaldo = 0
+            let target = 0
+
+            if (arrUserTabungLocal !== null) {
+                for (let i = 0; i < arrUserTabungLocal.length; i++) {
+                    if (arrUserTabungLocal[i]["username"] === usernameLogin) {
+                        for (let j = 0; j < arrUserTabungLocal[i]["histories"].length; j++) {
+                            totSaldo += Number(arrUserTabungLocal[i]["histories"][j]["saldo"])
+                        }
+                        break
+                    }
+                }
+            }
+            
+            if (arrUserTargetLocal !== null) {
+                for (let i = 0; i < arrUserTargetLocal.length; i++) {
+                    if (arrUserTargetLocal[i]["username"] === usernameLogin) {
+                        target = arrUserTargetLocal[i]["target"]
+                        break
+                    }
+                }
+            }
+
+            let perc = Math.floor(totSaldo/target*100)
+
+            if (!perc || perc === Infinity) {
+                perc = 0
+            }
+
+            result = `${totSaldo} / ${target} (${perc}%)`
+
+            document.getElementById("saldoPerTarget").innerHTML = result
+        }
+        getTotalSaldo()
+
+
+        function getTableValue () {
+            const head = document.querySelector("thead")
+            const body = document.querySelector("tbody")
+            const arrUserTabungLocal = JSON.parse(localStorage.getItem("userTabungLocal"))
+            let tags = ""
+
+            if (arrUserTabungLocal !== null) {
+                for (let i = 0; i < arrUserTabungLocal.length; i++) {
+                    if (arrUserTabungLocal[i]["username"] === usernameLogin) {
+                        for (let j = 0; j < arrUserTabungLocal[i]["histories"].length; j++) {
+                            tags += `<tr>
+                            <td>${arrUserTabungLocal[i]["histories"][j].date}</td>
+                            <td>${arrUserTabungLocal[i]["histories"][j].keterangan}</td>
+                            <td>${Number(arrUserTabungLocal[i]["histories"][j].saldo)}</td>
+                            </tr>
+                            `
+                        }
+                        break
+                    }
+                }
+                head.innerHTML = `<tr>
+                        <th>Date</th>
+                        <th>Keterangan</th>
+                        <th>Saldo</th>
+                    </tr>`
+                body.innerHTML = tags
+            }
+        }
+        getTableValue ()
+
+
+
+        function buttonTrasaction () {
+            formKeterangan = document.getElementById("keterangan").value
+            formTabung = document.getElementById("tabung").value
+            formTarget = localStorage.getItem("userTargetLocal")
+            
+            if (!formKeterangan || !formTabung) {
+                alert(`Form keterangan / tabung belum diisi.`)
+
+            } else {
+
+                if (Number(formTabung) <= 0) {
+                    alert(`Mohon masukkan angka diatas 0`)
+                } else {
+
+                    if (localStorage.getItem("userTabungLocal") === null) { // jika userTabungLocal masih null
+                    let arrUserTabungLocal = []
+                    let currDate = new Date()
+
+                    let objHistory = {
+                        date : `${currDate.getDate()}/${currDate.getMonth()}/${currDate.getFullYear()} ${currDate.getHours()}:${currDate.getMinutes()}:${currDate.getSeconds()}`,
+                        keterangan : formKeterangan,
+                        saldo : formTabung
+                    }
+
+                    let userTabung = {
+                        username : usernameLogin,
+                        histories : [objHistory]
+                    }
+
+                    arrUserTabungLocal.push(userTabung)
+                    localStorage.setItem("userTabungLocal",JSON.stringify(arrUserTabungLocal))
+                    location.reload()
+                    alert(`Transaksi telah di-input.`)
+
+                    } else { // jika userTabungLocal sudah ada
+                        let arrUserTabungLocal = JSON.parse(localStorage.getItem("userTabungLocal"))
+                        let flagGetUser = false
+
+                        for (let i = 0; i < arrUserTabungLocal.length; i++) {
+                            if (arrUserTabungLocal[i]["username"] === usernameLogin) {
+
+                                let currDate = new Date()
+
+                                let objHistory = {
+                                    date : `${currDate.getDate()}/${currDate.getMonth()}/${currDate.getFullYear()} ${currDate.getHours()}:${currDate.getMinutes()}:${currDate.getSeconds()}`,
+                                    keterangan : formKeterangan,
+                                    saldo : formTabung
+                                }
+
+                                arrUserTabungLocal[i]["histories"].push(objHistory)
+                                flagGetUser = true
+                                break
+                            }
+                        }
+
+                        if (!flagGetUser) { // jika userTabungLocal sudah ada tapi user belum pernah transaksi
+                            let currDate = new Date()
+
+                            let objHistory = {
+                                date : `${currDate.getDate()}/${currDate.getMonth()}/${currDate.getFullYear()} ${currDate.getHours()}:${currDate.getMinutes()}:${currDate.getSeconds()}`,
+                                keterangan : formKeterangan,
+                                saldo : formTabung
+                            }
+
+                            let userTabung = {
+                                username : usernameLogin,
+                                histories : [objHistory]
+                            }
+
+                            arrUserTabungLocal.push(userTabung)
+                        }
+
+                        localStorage.setItem("userTabungLocal",JSON.stringify(arrUserTabungLocal))
+                        location.reload()
+                        alert(`Transaksi telah di-input.`)
+                    }   
+
+                }
+                
+            }
+
+        }
+
+
+        function buttonTarget () {
+            let formTarget = document.getElementById("target").value // GET FORM TARGET
+
+            if (!formTarget) { // Form belum diisi
+                alert(`Mohon isi form taget, sebelum menekan tombol Submit Target`)
+            } else { // Form sudah diisi
+                if (localStorage.getItem("userTargetLocal") === null) { // jika userTargetLocal masih null
+
+                    let arrUserTarget = []
+                    let userTarget = {
+                        username : usernameLogin,
+                        target : formTarget
+                    }
+
+                    arrUserTarget.push(userTarget)
+                    localStorage.setItem("userTargetLocal",JSON.stringify(arrUserTarget))
+                    location.reload()
+                } else { // jika userTargetLocal sudah ada
+                    let arrUserTarget = JSON.parse(localStorage.getItem("userTargetLocal")) // get userTargetLocal from local storage str to array
+                    let flagGetUser = false
+
+                    for (let i = 0; i < arrUserTarget.length; i++) { // kalau username sudah ada (UPDATE)
+                        if (arrUserTarget[i]["username"] === usernameLogin) {
+                            arrUserTarget[i]["target"] = formTarget
+                            flagGetUser = true // assign flag to true
+                            break
+                        }
+                    }
+
+                    if (!flagGetUser) { // kalau username belum ada di userTargetLocal
+                        let userTarget = {
+                            username : usernameLogin,
+                            target : formTarget
+                        }
+
+                        arrUserTarget.push(userTarget)
+                    }
+
+                    localStorage.setItem("userTargetLocal",JSON.stringify(arrUserTarget))
+                    location.reload()
+                    alert(`Target telah di-input.`)
+
+                }
+            }
+        }
+
+
+        function logout () {
+            if (confirm("Apakah anda yakin ingin Logout ?")) {
+                window.location.href = "./indexLogin.html"
+                sessionStorage.removeItem("currentLoggedIn")
+            } else {
+                window.location.href = "./indexLanding.html"
+            }
+        }
+
+        function deleteAccount () {
+            if (confirm("Apakah anda yakin ingin menghapus account ?")) {
+                let userRegisteredLocal = JSON.parse(localStorage.getItem("userRegisteredLocal"))
+                for (let i = 0; i < userRegisteredLocal.length; i++) {
+                    if (userRegisteredLocal[i]["username"] === usernameLogin) {
+                        delete userRegisteredLocal.splice(i,1)
+                        break
+                    } 
+                }
+                localStorage.setItem("userRegisteredLocal",JSON.stringify(userRegisteredLocal))
+
+                let userTabungLocal = JSON.parse(localStorage.getItem("userTabungLocal"))
+                if (userTabungLocal !== null) {
+                    for (let i = 0; i < userTabungLocal.length; i++) {
+                        if (userTabungLocal[i]["username"] === usernameLogin) {
+                            delete userTabungLocal.splice(i,1)
+                            break
+                        } 
+                    }
+                    localStorage.setItem("userTabungLocal",JSON.stringify(userTabungLocal))
+                }
+                
+                let userTargetLocal = JSON.parse(localStorage.getItem("userTargetLocal"))
+                if (userTargetLocal !== null) {
+                    for (let i = 0; i < userTargetLocal.length; i++) {
+                        if (userTargetLocal[i]["username"] === usernameLogin) {
+                            delete userTargetLocal.splice(i,1)
+                            break
+                        } 
+                    }
+                    localStorage.setItem("userTargetLocal",JSON.stringify(userTargetLocal))
+                }
+                
+
+                sessionStorage.removeItem("currentLoggedIn")
+                window.location.href = "./indexLogin.html"
+            } else {
+                window.location.href = "./indexLanding.html"
+            }
+        }
+    </script>
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+    ></script>
+    
+</body>
+</html>
